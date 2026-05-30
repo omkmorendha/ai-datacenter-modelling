@@ -1,0 +1,123 @@
+==============================================================================
+AI DATA-CENTER MACRO STRESS MODEL — EXAMPLE OUTPUT (default assumptions)
+==============================================================================
+
+This is a STRESS-TESTING tool, not a forecast. Many inputs are
+low-confidence scenario assumptions, not facts.
+
+
+=== base_case — Base case ===
+  SOFR/10Y/30Y unchanged, modest spreads, stable power, high AI utilization, securitization open.
+  Total debt:        $495.00M
+  WACD:              8.55%
+  Floating (net):    28.9%  (gross 43.0%)
+  Revenue:           $204.00M
+  EBITDA:            $125.71M  (margin 61.6%)
+  Interest expense:  $42.31M
+  DSCR:              2.75   ICR: 2.97
+  FCF after capex:   $73.20M
+  Danger flags:      none
+  Funding contraction: $15.37B
+  Capex slowdown est:  6.2%
+
+=== high_for_longer — High for longer ===
+  SOFR +100, 10Y/30Y +75, spreads +75, power +10%, utilization unchanged.
+  Total debt:        $495.00M
+  WACD:              9.16%
+  Floating (net):    28.9%  (gross 43.0%)
+  Revenue:           $204.00M
+  EBITDA:            $119.38M  (margin 58.5%)
+  Interest expense:  $45.33M
+  DSCR:              2.45   ICR: 2.63
+  FCF after capex:   $63.85M
+  Danger flags:      none
+  Funding contraction: $100.40B
+  Capex slowdown est:  41.0%
+
+=== treasury_term_premium_shock — Treasury term-premium shock ===
+  SOFR +50, 10Y +150, 30Y +200, spreads +150, securitization haircut up, cap rates rise, refi worsens.
+  Total debt:        $495.00M
+  WACD:              9.34%
+  Floating (net):    28.9%  (gross 43.0%)
+  Revenue:           $204.00M
+  EBITDA:            $125.71M  (margin 61.6%)
+  Interest expense:  $46.22M
+  DSCR:              2.53   ICR: 2.72
+  FCF after capex:   $69.29M
+  Danger flags:      none
+  Funding contraction: $178.36B
+  Capex slowdown est:  73.0%
+
+=== iran_oil_inflation_shock — Iran / oil inflation shock ===
+  Geopolitical oil spike: SOFR +100, 10Y +100, 30Y +125, power +25%, infl exp +50, spreads +100.
+  Total debt:        $495.00M
+  WACD:              9.27%
+  Floating (net):    28.9%  (gross 43.0%)
+  Revenue:           $204.00M
+  EBITDA:            $109.89M  (margin 53.9%)
+  Interest expense:  $45.87M
+  DSCR:              2.23   ICR: 2.40
+  FCF after capex:   $53.82M
+  Danger flags:      none
+  Funding contraction: $153.39B
+  Capex slowdown est:  62.8%
+
+=== ai_revenue_disappointment — AI revenue disappointment ===
+  Utilization -20%, revenue/MW -15%, spreads +100, equity -25%, capex cuts begin.
+  Total debt:        $495.00M
+  WACD:              8.98%
+  Floating (net):    28.9%  (gross 43.0%)
+  Revenue:           $132.60M
+  EBITDA:            $69.20M  (margin 52.2%)
+  Interest expense:  $44.44M
+  DSCR:              1.44   ICR: 1.56
+  FCF after capex:   $18.14M
+  Danger flags:      none
+  Funding contraction: $286.58B
+  Capex slowdown est:  100.0%
+
+=== severe_private_credit_liquidity_crunch — Severe private-credit liquidity crunch ===
+  SOFR +150, spreads +250, PC NAV -15%, PD doubles, recovery falls, new lending -40%, securitization partly closed.
+  Total debt:        $495.00M
+  WACD:              10.06%
+  Floating (net):    28.9%  (gross 43.0%)
+  Revenue:           $204.00M
+  EBITDA:            $125.71M  (margin 61.6%)
+  Interest expense:  $49.77M
+  DSCR:              2.36   ICR: 2.53
+  FCF after capex:   $65.73M
+  Danger flags:      none
+  Funding contraction: $461.47B
+  Capex slowdown est:  100.0%
+
+=== combined_severe_case — Combined severe case ===
+  Treasury shock + AI disappointment + power shock + private-credit liquidity crunch, stacked.
+  Total debt:        $495.00M
+  WACD:              10.27%
+  Floating (net):    28.9%  (gross 43.0%)
+  Revenue:           $132.60M
+  EBITDA:            $57.10M  (margin 43.1%)
+  Interest expense:  $50.84M
+  DSCR:              1.05   ICR: 1.12
+  FCF after capex:   $-367.23K
+  Danger flags:      ['dscr_danger', 'icr_danger', 'margin_danger', 'fcf_danger']
+  Funding contraction: $649.78B
+  Capex slowdown est:  100.0%
+
+=== Breakpoint panel (one-axis sensitivity from base case) ===
+  Max SOFR shock before DSCR breach               : no breach within tested range
+  Max 10Y shock before refi uneconomic            : no breach within tested range
+  Max power-price shock before margin breach      : 53.6%
+  Min utilization before covenant breach          : 42.2%
+  Max credit-spread shock before FCF<0            : +3439 bps
+
+  thresholds: {'dscr_min': 1.2, 'icr_min': 1.5, 'ebitda_margin_min': 0.45}
+
+=== Refinancing gap under combined-severe (principal at risk by year) ===
+  2026: maturing $133.65M  refi_prob=45%  at_risk=$73.51M
+  2027: maturing $99.00M  refi_prob=45%  at_risk=$54.45M
+  2028: maturing $59.40M  refi_prob=45%  at_risk=$32.67M
+  2029: maturing $49.50M  refi_prob=45%  at_risk=$27.23M
+  2030: maturing $64.35M  refi_prob=45%  at_risk=$35.39M
+  2031: maturing $49.50M  refi_prob=45%  at_risk=$27.23M
+  2032: maturing $39.60M  refi_prob=45%  at_risk=$21.78M

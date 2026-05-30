@@ -208,16 +208,20 @@ def compute_breakpoints(
         sc.credit.credit_spread_bps += bps
         return sc
 
+    # Search ranges are wide (up to +3000-4000 bps) so a healthy base case still
+    # yields a finite breakpoint rather than "no breach in range". A breakpoint of
+    # several thousand bps simply means the project has large headroom on that axis.
+
     # 1. max SOFR shock (bps) before DSCR < dscr_min
     max_sofr_bps = _bisect(
         lambda b: project.dscr(with_sofr(b)) >= dscr_min,
-        0.0, 1000.0, tol=1.0, increasing_is_worse=True,
+        0.0, 4000.0, tol=1.0, increasing_is_worse=True,
     )
 
     # 2. max 10Y shock (bps) before refinancing uneconomic (proxy: ICR < icr_min)
     max_10y_bps = _bisect(
         lambda b: project.icr(with_10y(b)) >= icr_min,
-        0.0, 1000.0, tol=1.0, increasing_is_worse=True,
+        0.0, 4000.0, tol=1.0, increasing_is_worse=True,
     )
 
     # 3. max power price shock (%) before EBITDA margin < margin_min
@@ -237,7 +241,7 @@ def compute_breakpoints(
     # 5. max credit spread shock (bps) before FCF-after-capex < 0
     max_spread_bps = _bisect(
         lambda b: project.fcf_after_capex(with_spread(b)) >= 0.0,
-        0.0, 2000.0, tol=1.0, increasing_is_worse=True,
+        0.0, 4000.0, tol=1.0, increasing_is_worse=True,
     )
 
     return {

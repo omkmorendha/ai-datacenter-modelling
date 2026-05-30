@@ -25,6 +25,11 @@ dev = [
     "ruff>=0.4",
     "black>=24.0",
 ]
+notebooks = [
+    "jupyterlab>=4.0",
+    "ipykernel>=6.29",
+    "nbconvert>=7.0",
+]
 
 [project.scripts]
 ai-dc-model = "src.cli:main"
