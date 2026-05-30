@@ -44,6 +44,9 @@ packages = ["src"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+# Throwaway dev helpers and notebooks intentionally break import-order rules;
+# lint the shipped package + tests, not these.
+extend-exclude = ["scripts", "notebooks"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W", "UP", "B"]

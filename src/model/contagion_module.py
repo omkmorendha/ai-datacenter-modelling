@@ -287,8 +287,8 @@ class ContagionModel:
         for _ in range(rounds):
             x = decay * (self._M @ x)
             total_vec += x
-        # Subtract initial and first-order.
-        indirect = total_vec - x0 - first * 1.0  # noqa: RUF100 first is already round-1
+        # Subtract initial and first-order to isolate the second-order-and-beyond tail.
+        indirect = total_vec - x0 - first
         return self._vec_to_dict(indirect)
 
     # ------------------------------------------------------------------

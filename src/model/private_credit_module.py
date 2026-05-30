@@ -198,8 +198,12 @@ class PrivateCreditBook(BaseModel):
         economic loss may differ from the reported mark.  Distinct from
         expected_loss (PD * LGD), which is a forward-realized concept.
         Do NOT add this to expected_loss.
+
+        A loss is non-negative: a negative nav_haircut (a NAV *gain*) is floored
+        to zero here so it cannot flow as a negative "loss" into investor-loss
+        allocation or the contagion shock vector.
         """
-        return self.outstanding * scenario.private_credit.nav_haircut
+        return self.outstanding * max(0.0, scenario.private_credit.nav_haircut)
 
     # ------------------------------------------------------------------
     # 4. Liquidity / systemic stress scores

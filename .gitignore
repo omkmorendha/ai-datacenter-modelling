@@ -33,3 +33,6 @@ data/processed/*.csv
 # Editors
 .vscode/
 .idea/
+
+# Claude Code runtime (lock files, etc. — not version-controlled)
+.claude/*.lock

@@ -215,8 +215,10 @@ comes from the shocks, not a broken starting point:
 
 The story the model tells: a single well-structured project (power-inclusive
 lease, ~55% leverage) is robust to **any one** shock axis (breakpoints of
-+2500 bps SOFR, +2249 bps 10Y, +3214 bps spread before a single-axis breach).
-The danger emerges from the **combination** (combined-severe pushes DSCR to 1.05,
++4123 bps SOFR before a DSCR breach, +3439 bps spread before FCF turns negative;
+a 10Y move doesn't breach within the tested range because existing fixed coupons
+don't reprice live — it bites through the refinancing channel instead). The
+danger emerges from the **combination** (combined-severe pushes DSCR to 1.05,
 margin to the covenant edge) and from **sector-wide** private-credit and
 contagion channels — not from one isolated knob. See `example_output.txt` for the
 full run.
