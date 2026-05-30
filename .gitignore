@@ -36,3 +36,6 @@ data/processed/*.csv
 
 # Claude Code runtime (lock files, etc. — not version-controlled)
 .claude/*.lock
+
+# wrangler local cache
+web/.wrangler/
