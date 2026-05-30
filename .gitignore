@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# uv
+.uv/
+
+# Environment
+.env
+
+# Caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Data cache (remote pulls) — keep dir structure via .gitkeep, ignore contents
+data/raw/cache/
+data/processed/*.parquet
+data/processed/*.csv
+
+# OS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/

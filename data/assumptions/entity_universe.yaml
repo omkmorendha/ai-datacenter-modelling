@@ -1,0 +1,147 @@
+# =============================================================================
+# Entity universe for the AI data-center macro stress model (v0).
+#
+# Public hyperscalers + data-center REITs/operators with SEC CIK mappings for
+# the EDGAR companyfacts client, plus manual override assumptions for the
+# AI/data-center share of each company's capex (rarely disclosed separately).
+#
+# CIKs are zero-padded to 10 digits as EDGAR expects (CIK##########).
+# =============================================================================
+
+hyperscalers:
+
+  - name: "Microsoft"
+    ticker: "MSFT"
+    cik: "0000789019"
+    type: "hyperscaler"
+    ai_capex_share_override:
+      value: 0.60
+      confidence: low
+      source_note: "Majority of Microsoft's record capex is Azure/AI datacenter + servers; exact AI split undisclosed."
+      last_updated: "2026-05-30"
+
+  - name: "Alphabet"
+    ticker: "GOOGL"
+    cik: "0001652044"
+    type: "hyperscaler"
+    ai_capex_share_override:
+      value: 0.60
+      confidence: low
+      source_note: "Google Cloud + AI infrastructure dominate incremental capex; not separately disclosed."
+      last_updated: "2026-05-30"
+
+  - name: "Amazon"
+    ticker: "AMZN"
+    cik: "0001018724"
+    type: "hyperscaler"
+    ai_capex_share_override:
+      value: 0.50
+      confidence: low
+      source_note: "AWS/AI is a large but not exclusive share of Amazon's total capex (which also includes fulfillment/logistics)."
+      last_updated: "2026-05-30"
+
+  - name: "Meta Platforms"
+    ticker: "META"
+    cik: "0001326801"
+    type: "hyperscaler"
+    ai_capex_share_override:
+      value: 0.70
+      confidence: low
+      source_note: "Meta's capex surge is overwhelmingly AI training/inference infrastructure and data centers."
+      last_updated: "2026-05-30"
+
+  - name: "Oracle"
+    ticker: "ORCL"
+    cik: "0001341439"
+    type: "hyperscaler"
+    ai_capex_share_override:
+      value: 0.65
+      confidence: low
+      source_note: "OCI / AI cloud capacity buildout drives Oracle's elevated capex; partly debt/lease financed."
+      last_updated: "2026-05-30"
+
+  - name: "CoreWeave"
+    ticker: "CRWV"
+    cik: null
+    type: "ai_cloud_operator"
+    ai_capex_share_override:
+      value: 0.95
+      confidence: low
+      source_note: "Pure-play GPU cloud; nearly all capex is AI datacenter/GPU. CIK pending public-filing availability — set to null until confirmed, client will skip and use assumptions."
+      last_updated: "2026-05-30"
+
+datacenter_operators:
+
+  - name: "Digital Realty Trust"
+    ticker: "DLR"
+    cik: "0001297996"
+    type: "datacenter_reit"
+    ai_capex_share_override:
+      value: 0.45
+      confidence: low
+      source_note: "Mixed colocation/hyperscale REIT; AI-specific share of capex undisclosed."
+      last_updated: "2026-05-30"
+
+  - name: "Equinix"
+    ticker: "EQIX"
+    cik: "0001101239"
+    type: "datacenter_reit"
+    ai_capex_share_override:
+      value: 0.40
+      confidence: low
+      source_note: "Interconnection/colocation REIT; AI-specific xScale share of capex undisclosed."
+      last_updated: "2026-05-30"
+
+# ---------------------------------------------------------------------------
+# XBRL tag mapping: us-gaap concepts to pull from EDGAR companyfacts.
+# Lists are tried in order; first available tag wins (companies tag differently).
+# ---------------------------------------------------------------------------
+xbrl_concepts:
+  capex:
+    - "PaymentsToAcquirePropertyPlantAndEquipment"
+    - "PaymentsToAcquireProductiveAssets"
+  operating_cash_flow:
+    - "NetCashProvidedByUsedInOperatingActivities"
+  revenue:
+    - "RevenueFromContractWithCustomerExcludingAssessedTax"
+    - "Revenues"
+  operating_income:
+    - "OperatingIncomeLoss"
+  total_debt:
+    - "DebtLongtermAndShorttermCombinedAmount"
+  long_term_debt:
+    - "LongTermDebtNoncurrent"
+    - "LongTermDebt"
+  short_term_debt:
+    - "LongTermDebtCurrent"
+    - "DebtCurrent"
+  interest_expense:
+    - "InterestExpense"
+    - "InterestExpenseNonoperating"
+  operating_lease_liabilities:
+    - "OperatingLeaseLiability"
+  finance_lease_liabilities:
+    - "FinanceLeaseLiability"
+  cash_and_equivalents:
+    - "CashAndCashEquivalentsAtCarryingValue"
+  marketable_securities:
+    - "MarketableSecuritiesNoncurrent"
+    - "ShortTermInvestments"
+
+# ---------------------------------------------------------------------------
+# Sector-level contagion nodes (for the contagion module). Edge weights live in
+# base_assumptions / contagion defaults; this just enumerates the node set.
+# ---------------------------------------------------------------------------
+contagion_nodes:
+  - hyperscalers
+  - datacenter_operators
+  - private_credit_funds
+  - bdcs
+  - insurers
+  - pensions
+  - banks
+  - corporate_bond_funds
+  - securitization_investors
+  - utilities
+  - chip_suppliers
+  - pe_funds_lps

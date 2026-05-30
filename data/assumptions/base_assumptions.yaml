@@ -1,0 +1,333 @@
+# =============================================================================
+# Base assumptions for the AI data-center macro stress model (v0).
+#
+# Every manually estimated value is a STRUCTURED BLOCK with:
+#   value, unit, confidence (low|medium|high), source_note, last_updated, rationale
+#
+# These are scenario/calibration inputs, NOT facts. Private-credit, SPV, and
+# AI-specific capex figures are deliberately marked low-confidence. Replace with
+# primary-sourced data when available. Use sensitivity, not point estimates.
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# 1. Hyperscaler capex composition
+# ---------------------------------------------------------------------------
+ai_datacenter_share_of_hyperscaler_capex:
+  value: 0.55
+  unit: ratio
+  confidence: low
+  source_note: "Manual estimate; hyperscalers rarely disclose AI/DC-specific capex separately. Calibrated to 2024-2025 commentary (Microsoft/Alphabet/Amazon/Meta) that the majority of incremental capex is AI/data-center infrastructure."
+  last_updated: "2026-05-30"
+  rationale: "AI-specific capex is not separately disclosed; treat as override, not fact."
+
+hyperscaler_capex_debt_funded_share:
+  value: 0.25
+  unit: ratio
+  confidence: low
+  source_note: "Historically hyperscaler capex was overwhelmingly internally funded. Estimate of the share now shifting to debt/leases/SPV/JV as the thesis describes."
+  last_updated: "2026-05-30"
+  rationale: "Core thesis variable: the drift from retained-earnings funding toward a debt-financed cycle."
+
+# ---------------------------------------------------------------------------
+# 2. Private credit / data-center financing structure
+# ---------------------------------------------------------------------------
+private_credit_ai_datacenter_outstanding:
+  value: 250_000_000_000
+  unit: USD
+  confidence: low
+  source_note: "Manual midpoint based on public BIS/market estimates; replace with better data when available."
+  last_updated: "2026-05-30"
+  rationale: "Private-credit exposure is opaque; use scenario sensitivity rather than point estimate."
+
+private_credit_share_of_datacenter_financing:
+  value: 0.20
+  unit: ratio
+  confidence: low
+  source_note: "Estimated share of total AI/data-center debt financing sourced from private credit (vs banks, bonds, ABS, leases)."
+  last_updated: "2026-05-30"
+  rationale: "Distinguishes the mixed financing stack; do not assume all DC debt is private credit."
+
+private_credit_floating_rate_share:
+  value: 0.85
+  unit: ratio
+  confidence: medium
+  source_note: "Direct lending / private credit is predominantly floating-rate (SOFR + spread). Broadly consistent with FSB/IMF characterizations."
+  last_updated: "2026-05-30"
+  rationale: "Drives SOFR-shock transmission into debt service."
+
+private_credit_hedge_ratio:
+  value: 0.20
+  unit: ratio
+  confidence: low
+  source_note: "Estimated share of floating exposure hedged/swapped to fixed at the borrower or fund level."
+  last_updated: "2026-05-30"
+  rationale: "Net floating exposure = gross floating * (1 - hedge_ratio); often low for mid-market borrowers."
+
+private_credit_average_spread_bps:
+  value: 550
+  unit: basis_points
+  confidence: medium
+  source_note: "Typical all-in spread over SOFR for direct-lending infrastructure/DC deals."
+  last_updated: "2026-05-30"
+  rationale: "Base spread before scenario spread shocks."
+
+private_credit_average_ltv:
+  value: 0.60
+  unit: ratio
+  confidence: low
+  source_note: "Estimated loan-to-value for data-center private-credit deals."
+  last_updated: "2026-05-30"
+  rationale: "Drives recovery and mark-to-market loss given default."
+
+private_credit_average_dscr:
+  value: 1.45
+  unit: ratio
+  confidence: low
+  source_note: "Estimated portfolio-average debt-service-coverage ratio at origination."
+  last_updated: "2026-05-30"
+  rationale: "Headroom before DSCR covenant breach under rate/revenue shocks."
+
+private_credit_default_probability:
+  value: 0.03
+  unit: annual_probability
+  confidence: low
+  source_note: "Base annual PD for the private-credit DC book; stress scenarios multiply this."
+  last_updated: "2026-05-30"
+  rationale: "Mark-to-market stress and delayed marks make realized PD uncertain."
+
+private_credit_recovery_rate:
+  value: 0.55
+  unit: ratio
+  confidence: low
+  source_note: "Assumed recovery on defaulted DC private-credit loans (secured, hard-asset backed)."
+  last_updated: "2026-05-30"
+  rationale: "Recovery falls in liquidity-crunch scenarios; LGD = 1 - recovery."
+
+# Investor base of private-credit DC exposure (shares must sum to ~1.0)
+private_credit_investor_base:
+  value:
+    bdcs: 0.18
+    private_credit_funds: 0.30
+    insurers: 0.22
+    pensions: 0.15
+    banks: 0.08
+    sovereign_wealth: 0.05
+    other: 0.02
+  unit: shares
+  confidence: low
+  source_note: "Estimated allocation of private-credit DC losses across the investor base (FSB/ECB interlinkage framing)."
+  last_updated: "2026-05-30"
+  rationale: "Drives investor loss allocation; insurers/pensions carry duration-sensitive, slow-mark exposure."
+
+# ---------------------------------------------------------------------------
+# 3. Financing-stack mix for a representative data-center project (shares ~1.0)
+# ---------------------------------------------------------------------------
+representative_financing_stack_shares:
+  value:
+    hyperscaler_retained_earnings: 0.20
+    corporate_bonds: 0.15
+    bank_credit_facility: 0.12
+    syndicated_loans: 0.10
+    private_credit: 0.13
+    abs_cmbs_securitization: 0.10
+    project_finance_spv: 0.08
+    lease_obligations: 0.07
+    equity_jv: 0.05
+  unit: shares
+  confidence: low
+  source_note: "Representative mixed capital stack for a debt-financed AI data-center build. Illustrative; varies enormously by sponsor and deal."
+  last_updated: "2026-05-30"
+  rationale: "Explicitly models the mixed stack — NOT 'all floating-rate private credit'."
+
+# ---------------------------------------------------------------------------
+# 4. Data-center project operating assumptions
+# ---------------------------------------------------------------------------
+datacenter_capex_per_mw:
+  value: 9_000_000
+  unit: USD_per_MW
+  confidence: medium
+  source_note: "All-in development cost per MW of critical IT load for a modern AI/GPU-dense facility (shell + power + cooling, ex-chips)."
+  last_updated: "2026-05-30"
+  rationale: "Capex per MW drives total project debt and DSCR denominators."
+
+datacenter_utilization:
+  value: 0.85
+  unit: ratio
+  confidence: medium
+  source_note: "Assumed average utilization / occupancy of contracted capacity."
+  last_updated: "2026-05-30"
+  rationale: "Utilization disappointment is a core stress channel."
+
+datacenter_contracted_revenue_per_mw_year:
+  value: 1_650_000
+  unit: USD_per_MW_year
+  confidence: medium
+  source_note: "Annual contracted lease revenue per MW under long-term hyperscaler/enterprise contracts."
+  last_updated: "2026-05-30"
+  rationale: "Revenue per MW disappointment stresses debt-service capacity."
+
+datacenter_merchant_revenue_share:
+  value: 0.15
+  unit: ratio
+  confidence: low
+  source_note: "Share of revenue exposed to merchant/spot pricing rather than long-term contracts."
+  last_updated: "2026-05-30"
+  rationale: "Merchant exposure increases revenue volatility under demand shocks."
+
+datacenter_power_cost_per_mwh:
+  value: 75
+  unit: USD_per_MWh
+  confidence: medium
+  source_note: "Blended all-in delivered power cost per MWh; varies sharply by grid region."
+  last_updated: "2026-05-30"
+  rationale: "Power is the largest variable opex; power-price shocks compress margins."
+
+datacenter_pue:
+  value: 1.25
+  unit: ratio
+  confidence: medium
+  source_note: "Power Usage Effectiveness for a modern liquid/air-cooled AI facility (total facility power / IT power)."
+  last_updated: "2026-05-30"
+  rationale: "PUE>1 means facility draws more power than IT load; multiplies power cost."
+
+datacenter_opex_ex_power_per_mw_year:
+  value: 180_000
+  unit: USD_per_MW_year
+  confidence: medium
+  source_note: "Non-power operating cost per MW per year (staff, maintenance, connectivity, insurance)."
+  last_updated: "2026-05-30"
+  rationale: "Fixed-ish opex floor below revenue and power."
+
+datacenter_maintenance_capex_pct_of_revenue:
+  value: 0.05
+  unit: ratio
+  confidence: low
+  source_note: "Maintenance capex as a share of revenue (for FCF-after-capex)."
+  last_updated: "2026-05-30"
+  rationale: "FCF after maintenance capex is the debt-service cushion."
+
+datacenter_lease_term_years:
+  value: 12
+  unit: years
+  confidence: medium
+  source_note: "Typical anchor-tenant lease term for hyperscaler-leased capacity."
+  last_updated: "2026-05-30"
+  rationale: "Lease term vs debt maturity drives refinancing/term-out risk."
+
+datacenter_tenant_credit_quality:
+  value: "investment_grade"
+  unit: category
+  confidence: medium
+  source_note: "Most large AI/DC capacity is leased to investment-grade hyperscalers; merchant/colo is weaker."
+  last_updated: "2026-05-30"
+  rationale: "Tenant credit quality affects contract durability under stress."
+
+# ---------------------------------------------------------------------------
+# 5. Debt / refinancing structure defaults
+# ---------------------------------------------------------------------------
+base_credit_spread_bps:
+  value: 200
+  unit: basis_points
+  confidence: medium
+  source_note: "Representative investment-grade-ish credit spread over the risk-free reference for DC debt."
+  last_updated: "2026-05-30"
+  rationale: "Spread shocks reprice refinancing and mark-to-market."
+
+refinancing_maturity_distribution:
+  value:
+    2026: 0.08
+    2027: 0.12
+    2028: 0.18
+    2029: 0.22
+    2030: 0.18
+    2031: 0.12
+    2032: 0.10
+  unit: shares_of_debt_maturing_by_year
+  confidence: low
+  source_note: "Estimated maturity profile (refinancing wall) of AI/DC debt by year. Illustrative."
+  last_updated: "2026-05-30"
+  rationale: "Concentration of maturities into a high-rate window is the refinancing-risk core."
+
+base_refinancing_probability:
+  value: 0.90
+  unit: probability
+  confidence: low
+  source_note: "Base probability a maturing tranche can be refinanced on acceptable terms when markets are open."
+  last_updated: "2026-05-30"
+  rationale: "Falls sharply when securitization closes / spreads blow out."
+
+# ---------------------------------------------------------------------------
+# 6. Power / grid assumptions
+# ---------------------------------------------------------------------------
+power_price_base_by_region:
+  value:
+    ERCOT: 45
+    PJM: 55
+    CAISO: 70
+    MISO: 48
+    SPP: 42
+    NYISO: 68
+    ISONE: 72
+  unit: USD_per_MWh
+  confidence: medium
+  source_note: "Approximate average wholesale all-in power price by ISO/RTO region. Replace with EIA/ISO data."
+  last_updated: "2026-05-30"
+  rationale: "Regional dispersion drives where margin compression bites first."
+
+datacenter_load_growth_rate:
+  value: 0.20
+  unit: annual_ratio
+  confidence: low
+  source_note: "Estimated annual growth in data-center electricity load."
+  last_updated: "2026-05-30"
+  rationale: "Load growth vs grid capacity drives capex-delay / availability risk."
+
+grid_capacity_constraint_score_by_region:
+  value:
+    ERCOT: 0.55
+    PJM: 0.70
+    CAISO: 0.65
+    MISO: 0.45
+    SPP: 0.40
+    NYISO: 0.60
+    ISONE: 0.55
+  unit: score_0_1
+  confidence: low
+  source_note: "Qualitative interconnection/capacity-constraint severity by region (0 = ample, 1 = severe queue/constraint)."
+  last_updated: "2026-05-30"
+  rationale: "Higher constraint -> higher capex-delay probability from grid bottlenecks."
+
+# ---------------------------------------------------------------------------
+# 7. Stress thresholds (breakpoint analysis)
+# ---------------------------------------------------------------------------
+thresholds:
+  value:
+    dscr_min: 1.20
+    icr_min: 1.50
+    ebitda_margin_min: 0.45
+    fcf_after_capex_min: 0.0
+    min_utilization: 0.60
+  unit: mixed
+  confidence: medium
+  source_note: "Covenant-style and going-concern thresholds used to flag danger and compute breakpoints."
+  last_updated: "2026-05-30"
+  rationale: "Breakpoints are where each metric crosses these lines."
+
+# ---------------------------------------------------------------------------
+# 8. Treasury stress index calibration
+# ---------------------------------------------------------------------------
+treasury_stress_index:
+  value:
+    lookback_days: 252
+    component_weights:
+      dgs10: 1.0
+      dgs30: 1.0
+      sofr: 1.0
+      term_premium: 1.0
+      rate_vol: 1.0
+      auction_tail: 1.0
+  unit: config
+  confidence: medium
+  source_note: "Lookback window and equal component weights for the Treasury Stress Index z-score sum."
+  last_updated: "2026-05-30"
+  rationale: "Equal-weight z-scores; missing components dropped, not zero-filled."
