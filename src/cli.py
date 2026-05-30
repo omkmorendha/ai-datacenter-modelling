@@ -155,10 +155,21 @@ def cmd_breakpoints(args: argparse.Namespace) -> int:
         "min_utilization_before_covenant_breach": "Min utilization before covenant breach",
         "max_credit_spread_bps_before_fcf_negative": "Max credit-spread shock before FCF<0",
     }
+    floor = bp.get("floor_at_max_tested_shock", {})
+    floor_note = {
+        "max_sofr_shock_bps_before_dscr_breach": ("dscr_at_max_sofr", "DSCR still {:.2f} at +12000bps"),
+        "max_10y_shock_bps_before_refi_uneconomic": ("icr_at_max_10y", "ICR flat at {:.2f} (fixed coupons don't reprice live; bites via refi)"),
+        "max_power_price_pct_before_margin_breach": ("margin_at_max_power", "margin {:.0%} at +300%"),
+        "max_credit_spread_bps_before_fcf_negative": ("fcf_at_max_spread", "FCF still positive at +12000bps"),
+    }
     for key, label in labels.items():
         v = bp[key]
         if v is None:
-            disp = "no breach within tested range"
+            note_key, tmpl = floor_note.get(key, (None, ""))
+            extra = ""
+            if note_key and note_key in floor:
+                extra = " — " + tmpl.format(floor[note_key])
+            disp = "no breach within tested range" + extra
         elif "pct" in key or "utilization" in key:
             disp = f"{v * 100:.1f}%"
         else:

@@ -208,20 +208,26 @@ def compute_breakpoints(
         sc.credit.credit_spread_bps += bps
         return sc
 
-    # Search ranges are wide (up to +3000-4000 bps) so a healthy base case still
-    # yields a finite breakpoint rather than "no breach in range". A breakpoint of
-    # several thousand bps simply means the project has large headroom on that axis.
+    # Search ranges are deliberately very wide (up to +12000 bps) so a healthy,
+    # well-hedged base case still yields a finite breakpoint rather than "no breach
+    # in range". A breakpoint of several thousand bps simply means the project has
+    # very large headroom on that single axis — usually because only a minority of
+    # the stack is net-floating (the rest is fixed/hedged and does not reprice live).
 
     # 1. max SOFR shock (bps) before DSCR < dscr_min
     max_sofr_bps = _bisect(
         lambda b: project.dscr(with_sofr(b)) >= dscr_min,
-        0.0, 4000.0, tol=1.0, increasing_is_worse=True,
+        0.0, 12000.0, tol=1.0, increasing_is_worse=True,
     )
 
-    # 2. max 10Y shock (bps) before refinancing uneconomic (proxy: ICR < icr_min)
+    # 2. max 10Y shock (bps) before refinancing uneconomic (proxy: ICR < icr_min).
+    # NOTE: existing fixed-coupon tranches were priced off the curve AT ORIGINATION
+    # and do not reprice live — only refinancing reprices them. So on the *existing*
+    # stack a 10Y move may not move ICR at all; the breakpoint then represents the
+    # refinancing channel, which is captured separately via refinancing_gap().
     max_10y_bps = _bisect(
         lambda b: project.icr(with_10y(b)) >= icr_min,
-        0.0, 4000.0, tol=1.0, increasing_is_worse=True,
+        0.0, 12000.0, tol=1.0, increasing_is_worse=True,
     )
 
     # 3. max power price shock (%) before EBITDA margin < margin_min
@@ -241,8 +247,17 @@ def compute_breakpoints(
     # 5. max credit spread shock (bps) before FCF-after-capex < 0
     max_spread_bps = _bisect(
         lambda b: project.fcf_after_capex(with_spread(b)) >= 0.0,
-        0.0, 4000.0, tol=1.0, increasing_is_worse=True,
+        0.0, 12000.0, tol=1.0, increasing_is_worse=True,
     )
+
+    # Floor metrics at the max tested shock — so a "no breach" result is still
+    # interpretable (shows how much headroom remains even at the search ceiling).
+    floor = {
+        "dscr_at_max_sofr": project.dscr(with_sofr(12000.0)),
+        "icr_at_max_10y": project.icr(with_10y(12000.0)),
+        "margin_at_max_power": project.ebitda_margin(with_power(3.0)),
+        "fcf_at_max_spread": project.fcf_after_capex(with_spread(12000.0)),
+    }
 
     return {
         "max_sofr_shock_bps_before_dscr_breach": max_sofr_bps,
@@ -259,6 +274,7 @@ def compute_breakpoints(
             "utilization": base_util,
             "power_cost_per_mwh": project.power_cost_per_mwh,
         },
+        "floor_at_max_tested_shock": floor,
     }
 
 

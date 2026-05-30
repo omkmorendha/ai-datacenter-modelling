@@ -105,8 +105,8 @@ low-confidence scenario assumptions, not facts.
   Capex slowdown est:  100.0%
 
 === Breakpoint panel (one-axis sensitivity from base case) ===
-  Max SOFR shock before DSCR breach               : no breach within tested range
-  Max 10Y shock before refi uneconomic            : no breach within tested range
+  Max SOFR shock before DSCR breach               : +4123 bps
+  Max 10Y shock before refi uneconomic            : no breach within tested range — ICR flat at 2.97 (fixed coupons don't reprice live; bites via refi)
   Max power-price shock before margin breach      : 53.6%
   Min utilization before covenant breach          : 42.2%
   Max credit-spread shock before FCF<0            : +3439 bps
