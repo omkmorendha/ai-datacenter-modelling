@@ -16,7 +16,7 @@ Key distinctions the spec insists on:
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -24,12 +24,12 @@ from ..utils.validation import bps_to_decimal, safe_div
 from .scenarios import Scenario
 
 
-class RateType(str, Enum):
+class RateType(StrEnum):
     FIXED = "fixed"
     FLOATING = "floating"
 
 
-class LenderType(str, Enum):
+class LenderType(StrEnum):
     BANK = "bank"
     PRIVATE_CREDIT = "private_credit"
     BOND_MARKET = "bond_market"
@@ -40,7 +40,7 @@ class LenderType(str, Enum):
     OTHER = "other"
 
 
-class AmortizationType(str, Enum):
+class AmortizationType(StrEnum):
     BULLET = "bullet"          # principal due at maturity (refi wall)
     AMORTIZING = "amortizing"  # principal paid down over life
     INTEREST_ONLY = "interest_only"

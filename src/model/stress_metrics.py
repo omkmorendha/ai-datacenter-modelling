@@ -18,8 +18,9 @@ not joint probability.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from copy import deepcopy
-from typing import Any, Callable
+from typing import Any
 
 from .. import config
 from ..utils.logging import get_logger, log_scenario_result

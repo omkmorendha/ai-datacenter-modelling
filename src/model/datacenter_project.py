@@ -218,9 +218,10 @@ def build_representative_project(
     """Build a representative project + attached financing stack from YAML."""
     av = config.assumption_value
     capex_per_mw = av("datacenter_capex_per_mw", 9_000_000)
-    debt_to_capex = av("hyperscaler_capex_debt_funded_share", 0.25)
-    # Project-level leverage is higher than the hyperscaler-balance-sheet share.
-    project_leverage = max(0.65, float(debt_to_capex))
+    # Project-level leverage on a build. Read an explicit project leverage if set,
+    # else default to 0.55 (typical for a leveraged-but-financeable DC SPV). This
+    # is distinct from the hyperscaler-balance-sheet debt-funded share.
+    project_leverage = float(av("datacenter_project_leverage", 0.55))
     total_debt = capacity_mw * capex_per_mw * project_leverage
 
     stack = build_representative_stack(
@@ -242,6 +243,6 @@ def build_representative_project(
         lease_term_years=av("datacenter_lease_term_years", 12),
         tenant_credit_quality=av("datacenter_tenant_credit_quality", "investment_grade"),
         debt_to_capex_ratio=project_leverage,
-        principal_amortization_rate=0.04,
+        principal_amortization_rate=av("datacenter_principal_amortization_rate", 0.02),
         financing_stack=stack,
     )

@@ -159,12 +159,12 @@ datacenter_utilization:
   rationale: "Utilization disappointment is a core stress channel."
 
 datacenter_contracted_revenue_per_mw_year:
-  value: 1_650_000
+  value: 2_400_000
   unit: USD_per_MW_year
   confidence: medium
-  source_note: "Annual contracted lease revenue per MW under long-term hyperscaler/enterprise contracts."
+  source_note: "Annual contracted lease revenue per MW under long-term hyperscaler/enterprise contracts. For AI/GPU-dense capacity, all-in lease rates (often power-inclusive/triple-net-plus) run ~$2.0-2.6M/MW/yr. Calibrated to a power-inclusive contract so revenue covers the power pass-through."
   last_updated: "2026-05-30"
-  rationale: "Revenue per MW disappointment stresses debt-service capacity."
+  rationale: "Revenue per MW disappointment stresses debt-service capacity. Set so the base case is a healthy, financeable project (DSCR > covenant) — stress comes from shocks, not a broken base."
 
 datacenter_merchant_revenue_share:
   value: 0.15
@@ -175,12 +175,12 @@ datacenter_merchant_revenue_share:
   rationale: "Merchant exposure increases revenue volatility under demand shocks."
 
 datacenter_power_cost_per_mwh:
-  value: 75
+  value: 68
   unit: USD_per_MWh
   confidence: medium
-  source_note: "Blended all-in delivered power cost per MWh; varies sharply by grid region."
+  source_note: "Blended all-in delivered power cost per MWh; varies sharply by grid region (see power_price_base_by_region)."
   last_updated: "2026-05-30"
-  rationale: "Power is the largest variable opex; power-price shocks compress margins."
+  rationale: "Power is the largest variable opex; power-price shocks compress margins. With a power-inclusive lease, revenue/MW is set above this pass-through."
 
 datacenter_pue:
   value: 1.25
@@ -191,10 +191,10 @@ datacenter_pue:
   rationale: "PUE>1 means facility draws more power than IT load; multiplies power cost."
 
 datacenter_opex_ex_power_per_mw_year:
-  value: 180_000
+  value: 150_000
   unit: USD_per_MW_year
   confidence: medium
-  source_note: "Non-power operating cost per MW per year (staff, maintenance, connectivity, insurance)."
+  source_note: "Non-power operating cost per MW per year (staff, maintenance, connectivity, insurance, property tax)."
   last_updated: "2026-05-30"
   rationale: "Fixed-ish opex floor below revenue and power."
 
@@ -205,6 +205,22 @@ datacenter_maintenance_capex_pct_of_revenue:
   source_note: "Maintenance capex as a share of revenue (for FCF-after-capex)."
   last_updated: "2026-05-30"
   rationale: "FCF after maintenance capex is the debt-service cushion."
+
+datacenter_project_leverage:
+  value: 0.55
+  unit: ratio
+  confidence: medium
+  source_note: "Debt as a share of total project capex for a representative leveraged DC SPV/project-finance build. Distinct from the hyperscaler-balance-sheet debt-funded share."
+  last_updated: "2026-05-30"
+  rationale: "Leverage drives total project debt and the DSCR/ICR denominators; ~50-60% is typical for a financeable project that still has equity cushion."
+
+datacenter_principal_amortization_rate:
+  value: 0.02
+  unit: annual_ratio
+  confidence: low
+  source_note: "Annual principal repaid as a fraction of amortizing debt (for DSCR debt service). Bullet/IO tranches are excluded from amortization."
+  last_updated: "2026-05-30"
+  rationale: "Higher amortization tightens DSCR; many DC deals are light-amortization with refi at maturity."
 
 datacenter_lease_term_years:
   value: 12

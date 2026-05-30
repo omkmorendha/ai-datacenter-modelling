@@ -102,7 +102,7 @@ class Scenario(BaseModel):
 
     # ---- construction ------------------------------------------------------
     @classmethod
-    def from_dict(cls, name: str, raw: dict) -> "Scenario":
+    def from_dict(cls, name: str, raw: dict) -> Scenario:
         """Build a Scenario from a scenarios.yaml entry (lenient to missing groups)."""
         return cls(
             name=name,
